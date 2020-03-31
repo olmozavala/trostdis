@@ -18,3 +18,7 @@ dependencies:
     - datashader=*.*
     - dash_bootstrap_components=*.*
     - pyresample=*.*
+    - opencv=*.*
+    - geopy=*.*
+    - s3fs=*.*
+    - scikit-learn=*.*
