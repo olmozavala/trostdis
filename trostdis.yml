@@ -1,0 +1,20 @@
+name: eoasweb
+channels:
+    - conda-forge
+    - nodefaults
+    - anaconda
+dependencies:
+    - python=3.*.*
+    - pandas=1.*.*
+    - numpy=1.*.*
+    - matplotlib=3.*.*
+    - netcdf4=1.4.*
+    - cartopy=0.*
+    - xarray=0.*
+    - psycopg2=2.*
+    - dash=1.*
+    - geopandas=0.*
+    - colorcet=*.*
+    - datashader=*.*
+    - dash_bootstrap_components=*.*
+    - pyresample=*.*
