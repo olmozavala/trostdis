@@ -10,6 +10,16 @@ To clone the web labeler [ANUMOGET](https://github.com/olmozavala/AwesomeGeoTagg
 `
 git submodule update --init --recursive
 `
+
+To download the test data you need to install **Git LFS**. 
+In Ubuntu it is done with:
+
+```
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+sudo apt-get install git-lfs
+```
+Then download the test folder with `git lfs fetch`.
+
 ## PyCharm
 In order to run/debug each module separated you need
 to set each of the subfolders root as a `source folder`.
