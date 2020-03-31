@@ -1,4 +1,5 @@
 .idea
 *.swp
 run.sh
+MainConfig.py
 __pycache__
