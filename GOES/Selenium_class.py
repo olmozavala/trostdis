@@ -104,6 +104,7 @@ driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr
 
 # Place order
 driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/div[2]/input[1]').click()
+waiting_load(driver)
 
 # Fill survey
 driver.find_element_by_xpath('/html/body/div[1]/div[5]/page/mid/page/table/tbody/tr[2]/td/form/input[2]').click()
