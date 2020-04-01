@@ -5,3 +5,8 @@ class GOES(Enum):
     input_folder = 2
     output_folder = 3
 
+class CLASS(Enum):
+    user0 = 1
+    pass0 = 2
+    dates = 3
+
