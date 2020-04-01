@@ -9,4 +9,9 @@ class CLASS(Enum):
     user0 = 1
     pass0 = 2
     dates = 3
+    
+class GMAIL(Enum):
+    FROM_EMAIL = 1
+    FROM_PWD = 2
+    local_path = 3
 
