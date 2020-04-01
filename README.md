@@ -49,3 +49,7 @@ en un solo netcdf.
 
 #### Selenium_class.py
 Llena el formulario para hacer la solicitud del GOES.
+
+#### gmailclass.py
+Accede a los correo electronico de CLASS Notifications y
+descarga los archivos desde el servidor ftp.
