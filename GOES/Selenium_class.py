@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from datetime import datetime
 import numpy as np
 import pandas as pd
+import csv
 
 import os, stat, sys
 from os.path import join
@@ -49,10 +50,19 @@ if __name__ == "__main__":
     user0 = config[CLASS.user0]
     pass0 = config[CLASS.pass0]
     dates = config[CLASS.dates]
+    
+    
+    logfile = open('missing_data', 'w+')
+    sdate = []
+    with open(dates) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            sdate.append(row[0])
+    tdates = pd.to_datetime(pd.Series(sdate), format='%Y-%m-%d %H:%M:%S').values
 
-    tdates = np.load(dates)['dates']
+    # tdates = np.load(dates)['dates']
     ndate  = len(tdates)
-    delta = np.timedelta64(1, 'h')
+    delta = np.timedelta64(2, 'h')
     ldate = pd.to_datetime(tdates - delta)
     udate = pd.to_datetime(tdates + delta)
 
@@ -98,11 +108,14 @@ if __name__ == "__main__":
 
         # Select best file
         npage = findpages(driver)
-        lasttable = 10 - (npage[0]*10 - npage[-1])
-        dates = getdates(driver, lasttable, npage)
-        mark = find_nearest(dates, tdates[ii])
-        driver.find_element_by_xpath('/html/body/div[1]/div[5]/page/div[2]/form[2]/table[2]/tbody/tr[{}]/td[2]/input'.format(int(mark+2))).click()
-        driver.find_element_by_xpath('/html/body/div[1]/div[5]/page/div[2]/form[2]/table[1]/tbody/tr/td[2]/input[2]').click()
+        try:
+            lasttable = 10 - (npage[0]*10 - npage[-1])
+            dates = getdates(driver, lasttable, npage)
+            mark = find_nearest(dates, tdates[ii])
+            driver.find_element_by_xpath('/html/body/div[1]/div[5]/page/div[2]/form[2]/table[2]/tbody/tr[{}]/td[2]/input'.format(int(mark+2))).click()
+            driver.find_element_by_xpath('/html/body/div[1]/div[5]/page/div[2]/form[2]/table[1]/tbody/tr/td[2]/input[2]').click()
+        except:
+            logfile.write(str(tdates[ii]) +  '\n')
 
     # Setup order
     driver.find_element_by_xpath('/html/body/div[1]/div[5]/page/div[2]/form[2]/table[1]/tbody/tr/td[2]/input[1]').click()
@@ -111,9 +124,9 @@ if __name__ == "__main__":
     # Bands (click to omit band)
     driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr[2]/td/table/tbody/tr[3]/th[9]/select/option[1]').click()
     driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr[2]/td/table/tbody/tr[3]/th[9]/select/option[2]').click()
-    #driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr[2]/td/table/tbody/tr[3]/th[9]/select/option[3]').click()
-    #driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr[2]/td/table/tbody/tr[3]/th[9]/select/option[4]').click()
-    #driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr[2]/td/table/tbody/tr[3]/th[9]/select/option[5]').click()
+    driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr[2]/td/table/tbody/tr[3]/th[9]/select/option[3]').click()
+    # driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr[2]/td/table/tbody/tr[3]/th[9]/select/option[4]').click()
+    driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/table[2]/tbody/tr[2]/td/table/tbody/tr[3]/th[9]/select/option[5]').click()
 
     # Place order
     driver.find_element_by_xpath('/html/body/div[1]/div[5]/form[2]/div[2]/input[1]').click()
@@ -124,4 +137,4 @@ if __name__ == "__main__":
     driver.find_element_by_xpath('//*[@id="postSurvey"]').click()
     waiting_load(driver)
     driver.close()
-
+    logfile.close()
