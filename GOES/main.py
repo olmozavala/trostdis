@@ -82,8 +82,8 @@ def goes13_4k():
     description = "4km_resolution"
     proj_id = 'emcwf'
     projection = 'EPSG:4326'
-    width = int(2694/2)
-    height = int(1906/2)
+    width = 1347
+    height = 953
     area_extent = (-123.3613, 4.1260, -74.8779, 38.4260)
     areas = geometry.AreaDefinition(area_id = area_id, 
                                     description = description, 
@@ -121,16 +121,10 @@ if __name__ == "__main__":
     # Organizing data
     for file in range(nfiles):
         frame = xr.open_dataset(file_b[file])
-        if file == 0:
-            data = frame.data.data.reshape(1246, 3464)
-            tt = np.array([str2time(frame)])
-            slat = frame.lat.data
-            slon = frame.lon.data
-        else:
-            aux = frame.data.data.reshape(1246, 3464)
-            tt = np.concatenate((tt, np.array([str2time(frame)])))
-            data = np.stack([data, aux], axis=2)
-
+        data = frame.data.data.reshape(1246, 3464)
+        tt = np.array([str2time(frame)])
+        slat = frame.lat.data
+        slon = frame.lon.data
     data = gvar2bt(data, nband)
     outframe = makeframe(area1, tt)
 
@@ -141,7 +135,7 @@ if __name__ == "__main__":
                                            nprocs=6).resample(area1).image_data
 
 
-    outframe[var0] = (['lat', 'lon', 'time'], containr)
+    outframe[var0] = (['lat', 'lon', 'time'], containr.reshape(953, 1347, 1))
     outframe[var0].attrs['axis'] = "lat lon time"
     outframe[var0].attrs['resample_method'] = "Nearest_Neighbour"
     
