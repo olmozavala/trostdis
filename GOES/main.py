@@ -121,30 +121,31 @@ if __name__ == "__main__":
     # Organizing data
     for file in range(nfiles):
         frame = xr.open_dataset(file_b[file])
-        data = frame.data.data.reshape(1246, 3464)
+        arrayshape = frame.data.data.shape
+        data = frame.data.data.reshape(arrayshape[1], arrayshape[2])
         tt = np.array([str2time(frame)])
         slat = frame.lat.data
         slon = frame.lon.data
-    data = gvar2bt(data, nband)
-    outframe = makeframe(area1, tt)
+        data = gvar2bt(data, nband)
+        outframe = makeframe(area1, tt)
 
-    swath = geometry.SwathDefinition(lons=slon, lats=slat)
-    containr = image.ImageContainerNearest(data,
-                                           swath,
-                                           radius_of_influence=5000,
-                                           nprocs=6).resample(area1).image_data
+        swath = geometry.SwathDefinition(lons=slon, lats=slat)
+        containr = image.ImageContainerNearest(data,
+                                               swath,
+                                               radius_of_influence=5000,
+                                               nprocs=6).resample(area1).image_data
 
 
-    outframe[var0] = (['lat', 'lon', 'time'], containr.reshape(953, 1347, 1))
-    outframe[var0].attrs['axis'] = "lat lon time"
-    outframe[var0].attrs['resample_method'] = "Nearest_Neighbour"
-    
-    filer = outframe.time.data
-    for tt in filer:
-        odate = np.datetime_as_string(tt, unit='s').tolist().split('T')
-        singlefile = outframe.sel(time=str(tt))
-        singlefile.to_netcdf(path=join(spath,oname.format(odate[0], odate[-1], nband)),
-                             format='netCDF4',
-                             encoding=encodedic,
-                             unlimited_dims=['time'])
-    print('DONE')
+        outframe[var0] = (['lat', 'lon', 'time'], containr.reshape(953, 1347, 1))
+        outframe[var0].attrs['axis'] = "lat lon time"
+        outframe[var0].attrs['resample_method'] = "Nearest_Neighbour"
+        
+        filer = outframe.time.data
+        for tt in filer:
+            odate = np.datetime_as_string(tt, unit='s').tolist().split('T')
+            singlefile = outframe.sel(time=str(tt))
+            singlefile.to_netcdf(path=join(spath,oname.format(odate[0], odate[-1], nband)),
+                                 format='netCDF4',
+                                 encoding=encodedic,
+                                 unlimited_dims=['time'])
+        print('DONE')
