@@ -12,7 +12,7 @@ from glob import glob
 from datetime import datetime
 from pyresample import image, geometry
 
-from config_goes.MainConfig import get_config
+from config_goes.MainConfig_Example import get_config
 from config_goes.params import *
 
 
@@ -102,8 +102,8 @@ if __name__ == "__main__":
 
     var0 = 'C0{}'.format(nband)
 
-    oname = 'goes13_2012_C0{}.nc'.format(nband)
-    fname = 'goes13*0{}.nc'.format(nband)
+    oname = 'goes13_{0}_{1}_C0{2}.nc'
+    fname = 'goes13*BAND_0{}.nc'.format(nband)
 
     file_b = sorted(glob(join(fpath,fname)))
     nfiles = len(file_b)
@@ -144,14 +144,13 @@ if __name__ == "__main__":
     outframe[var0] = (['lat', 'lon', 'time'], containr)
     outframe[var0].attrs['axis'] = "lat lon time"
     outframe[var0].attrs['resample_method'] = "Nearest_Neighbour"
-    outframe.to_netcdf(path=spath+oname,
-                       format='netCDF4',
-                       encoding=encodedic,
-                       unlimited_dims=['time'])
-
+    
+    filer = outframe.time.data
+    for tt in filer:
+        odate = np.datetime_as_string(tt, unit='s').tolist().split('T')
+        singlefile = outframe.sel(time=str(tt))
+        singlefile.to_netcdf(path=join(spath,oname.format(odate[0], odate[-1], nband)),
+                             format='netCDF4',
+                             encoding=encodedic,
+                             unlimited_dims=['time'])
     print('DONE')
-
-
-
-
-
